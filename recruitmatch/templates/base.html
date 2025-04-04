@@ -1,48 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}RecruitMatch IA{% endblock %}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
-
-<nav class="navbar navbar-expand-lg bg-body-tertiary">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="{% url 'home' %}">
-            {% load static %}
-            <img src="{% static 'images/home.png' %}" alt="" width="30" height="24" class="d-inline-block align-text-top">
-            Recruit Match IA
-        </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#">Graficas</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Statistics</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Login</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Sign Up</a>
-                </li>
-            </ul>
-        </div>
-    </div>
-</nav>
-        
-<div class="container"></div>
-    {% block content %}
-    {% endblock content%}
-</div>
-
-<footer class="text-center text-lg-start bg-light text-muted mt-4">
-    <div class="container">
-        <div class="row">
-            <div class="text-center p-4">
-                <h4>© 2025 Copyright - Recruit Match IA</h4>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'home' %}">
+                <img src="{% static 'images/logo.svg' %}" alt="Logo RecruitMatch" width="30" height="30" class="d-inline-block align-text-top">
+                RecruitMatch IA
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'vacantes_list' %}">
+                            <i class="fas fa-briefcase"></i> Vacantes
+                        </a>
+                    </li>
+                    {% if user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'profile' %}">
+                                <i class="fas fa-user"></i> Mi Perfil
+                            </a>
+                        </li>
+                        {% if user.recruiterprofile %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'recruiter_profile' %}">
+                                    <i class="fas fa-building"></i> Panel Reclutador
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'create_vacante' %}">
+                                    <i class="fas fa-plus"></i> Crear Vacante
+                                </a>
+                            </li>
+                        {% endif %}
+                    {% endif %}
+                </ul>
+                <ul class="navbar-nav">
+                    {% if user.is_authenticated %}
+                        <li class="nav-item">
+                            <form method="post" action="{% url 'logout' %}" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-outline-danger">
+                                    <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                                </button>
+                            </form>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="btn btn-primary me-2" href="{% url 'login' %}">
+                                <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="btn btn-outline-primary" href="{% url 'register' %}">
+                                <i class="fas fa-user-plus"></i> Registrarse
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
             </div>
         </div>
-    </div>
-</footer>
+    </nav>
+
+    <main class="container py-4">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <footer class="bg-light text-center text-lg-start mt-5">
+        <div class="container p-4">
+            <div class="row">
+                <div class="col-lg-6 col-md-12 mb-4 mb-md-0">
+                    <h5 class="text-uppercase">RecruitMatch IA</h5>
+                    <p>
+                        Conectando talento con oportunidades a través de la inteligencia artificial.
+                    </p>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+                    <h5 class="text-uppercase">Enlaces</h5>
+                    <ul class="list-unstyled mb-0">
+                        <li><a href="{% url 'home' %}" class="text-dark">Inicio</a></li>
+                        <li><a href="{% url 'vacantes_list' %}" class="text-dark">Vacantes</a></li>
+                        <li><a href="#" class="text-dark">Sobre Nosotros</a></li>
+                        <li><a href="#" class="text-dark">Contacto</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+                    <h5 class="text-uppercase">Síguenos</h5>
+                    <div class="mt-2">
+                        <a href="#" class="text-dark me-2"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-dark me-2"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-dark me-2"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" class="text-dark"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.05);">
+            © 2024 Copyright: RecruitMatch IA
+        </div>
+    </footer>
+</body>
+</html>

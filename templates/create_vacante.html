@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow-md">
+    <h2 class="text-2xl font-bold mb-6 text-center">Crear Nueva Vacante</h2>
+    
+    <form method="post" class="space-y-6">
+        {% csrf_token %}
+        
+        {% if form.errors %}
+        <div class="bg-red-50 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+            <strong class="font-bold">Error:</strong>
+            <span class="block sm:inline">Por favor corrige los errores a continuación.</span>
+        </div>
+        {% endif %}
+
+        <div>
+            <label for="id_title" class="block text-sm font-medium text-gray-700">
+                Nombre de la vacante
+            </label>
+            <div class="mt-1">
+                {{ form.title }}
+                {% if form.title.errors %}
+                <p class="mt-2 text-sm text-red-600">{{ form.title.errors.0 }}</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div>
+            <label for="id_company" class="block text-sm font-medium text-gray-700">
+                Empresa
+            </label>
+            <div class="mt-1">
+                {{ form.company }}
+                {% if form.company.errors %}
+                <p class="mt-2 text-sm text-red-600">{{ form.company.errors.0 }}</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div>
+            <label for="id_location" class="block text-sm font-medium text-gray-700">
+                Ciudad
+            </label>
+            <div class="mt-1">
+                {{ form.location }}
+                {% if form.location.errors %}
+                <p class="mt-2 text-sm text-red-600">{{ form.location.errors.0 }}</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div>
+            <label for="id_website" class="block text-sm font-medium text-gray-700">
+                Página web
+            </label>
+            <div class="mt-1">
+                {{ form.website }}
+                {% if form.website.errors %}
+                <p class="mt-2 text-sm text-red-600">{{ form.website.errors.0 }}</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div>
+            <label for="id_salary" class="block text-sm font-medium text-gray-700">
+                Salario
+            </label>
+            <div class="mt-1">
+                {{ form.salary }}
+                {% if form.salary.errors %}
+                <p class="mt-2 text-sm text-red-600">{{ form.salary.errors.0 }}</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div>
+            <label for="id_employment_type" class="block text-sm font-medium text-gray-700">
+                Tipo de empleo
+            </label>
+            <div class="mt-1">
+                {{ form.employment_type }}
+                {% if form.employment_type.errors %}
+                <p class="mt-2 text-sm text-red-600">{{ form.employment_type.errors.0 }}</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div>
+            <label for="id_description" class="block text-sm font-medium text-gray-700">
+                Descripción
+            </label>
+            <div class="mt-1">
+                {{ form.description }}
+                {% if form.description.errors %}
+                <p class="mt-2 text-sm text-red-600">{{ form.description.errors.0 }}</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div>
+            <label for="id_requirements" class="block text-sm font-medium text-gray-700">
+                Requisitos
+            </label>
+            <div class="mt-1">
+                {{ form.requirements }}
+                {% if form.requirements.errors %}
+                <p class="mt-2 text-sm text-red-600">{{ form.requirements.errors.0 }}</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div>
+            <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                Crear Vacante
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %} 

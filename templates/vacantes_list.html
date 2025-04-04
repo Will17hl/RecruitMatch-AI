@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <h1 class="text-3xl font-bold text-gray-900 mb-8">Explora Vacantes</h1>
+            
+            <!-- Search Form -->
+            <form method="GET" class="max-w-2xl mx-auto">
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <div class="flex-1">
+                        <input type="text" name="q" value="{{ query }}" 
+                               class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary"
+                               placeholder="Buscar por título, empresa o descripción">
+                    </div>
+                    <div class="flex-1">
+                        <input type="text" name="location" value="{{ location }}"
+                               class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary"
+                               placeholder="Ubicación">
+                    </div>
+                    <button type="submit" 
+                            class="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark transition duration-300">
+                        Buscar
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Vacancies Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% for vacante in vacantes %}
+            <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition duration-300">
+                <div class="p-6">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h2 class="text-xl font-semibold text-gray-900 mb-2">{{ vacante.title }}</h2>
+                            <p class="text-gray-600 mb-4">{{ vacante.company }}</p>
+                        </div>
+                        {% if user.is_authenticated %}
+                        <a href="{% url 'toggle_favorito' pk=vacante.pk %}" 
+                           class="text-2xl {% if user in vacante.favoritos.all %}text-yellow-500{% else %}text-gray-400{% endif %} hover:text-yellow-500">
+                            <i class="fas fa-star"></i>
+                        </a>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-primary-light text-primary">
+                            {{ vacante.location }}
+                        </span>
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-primary-light text-primary">
+                            {{ vacante.employment_type }}
+                        </span>
+                        {% if vacante.salary %}
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-primary-light text-primary">
+                            {{ vacante.salary }}
+                        </span>
+                        {% endif %}
+                    </div>
+                    
+                    <p class="text-gray-600 mb-4 line-clamp-3">{{ vacante.description }}</p>
+                    
+                    <div class="flex justify-between items-center">
+                        <a href="{% url 'vacante_detail' pk=vacante.pk %}" 
+                           class="text-primary hover:text-primary-dark font-medium">
+                            Ver detalles →
+                        </a>
+                        <span class="text-sm text-gray-500">{{ vacante.date|date:"d M Y" }}</span>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-span-full text-center py-12">
+                <p class="text-gray-500 text-lg">No se encontraron vacantes que coincidan con tu búsqueda.</p>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        {% if vacantes.paginator.num_pages > 1 %}
+        <div class="mt-12 flex justify-center">
+            <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                {% if vacantes.has_previous %}
+                <a href="?page={{ vacantes.previous_page_number }}{% if query %}&q={{ query }}{% endif %}{% if location %}&location={{ location }}{% endif %}" 
+                   class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                    <span class="sr-only">Anterior</span>
+                    <i class="fas fa-chevron-left"></i>
+                </a>
+                {% endif %}
+
+                {% for num in vacantes.paginator.page_range %}
+                    {% if vacantes.number == num %}
+                    <span class="relative inline-flex items-center px-4 py-2 border border-primary bg-primary text-white text-sm font-medium">
+                        {{ num }}
+                    </span>
+                    {% elif num > vacantes.number|add:'-3' and num < vacantes.number|add:'3' %}
+                    <a href="?page={{ num }}{% if query %}&q={{ query }}{% endif %}{% if location %}&location={{ location }}{% endif %}" 
+                       class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
+                        {{ num }}
+                    </a>
+                    {% endif %}
+                {% endfor %}
+
+                {% if vacantes.has_next %}
+                <a href="?page={{ vacantes.next_page_number }}{% if query %}&q={{ query }}{% endif %}{% if location %}&location={{ location }}{% endif %}" 
+                   class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                    <span class="sr-only">Siguiente</span>
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+                {% endif %}
+            </nav>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %} 

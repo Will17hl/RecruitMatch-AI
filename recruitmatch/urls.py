@@ -1,30 +1,20 @@
-"""
-URL configuration for recruitmatch project.
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/5.1/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
 from django.contrib import admin
-from django.urls import path
-from vacantes import views as vacanteViews
-
-from django.conf.urls.static import static
+from django.urls import path, include
 from django.conf import settings
+from django.conf.urls.static import static
+from vacantes.views import home, register, profile, recruiter_profile, vacante_detail, create_vacante, vacantes_list, vacantes_solicitadas, vacantes_favoritas, toggle_favorito
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', vacanteViews.home, name='home'),
-    path('signup/', vacanteViews.signup, name='signup'),
-]
-
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    path('', home, name='home'),
+    path('accounts/', include('django.contrib.auth.urls')),
+    path('register/', register, name='register'),
+    path('profile/', profile, name='profile'),
+    path('recruiter-profile/', recruiter_profile, name='recruiter_profile'),
+    path('vacantes/', vacantes_list, name='vacantes_list'),
+    path('vacante/<int:pk>/', vacante_detail, name='vacante_detail'),
+    path('vacante/create/', create_vacante, name='create_vacante'),
+    path('vacantes/solicitadas/', vacantes_solicitadas, name='vacantes_solicitadas'),
+    path('vacante/<int:pk>/favorito/', toggle_favorito, name='toggle_favorito'),
+    path('vacantes/favoritas/', vacantes_favoritas, name='vacantes_favoritas'),
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

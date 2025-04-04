@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}RecruitMatch AI{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00BFA5;
+            --primary-dark: #00897B;
+            --secondary: #FF4081;
+        }
+        .bg-primary { background-color: var(--primary); }
+        .bg-primary-dark { background-color: var(--primary-dark); }
+        .text-primary { color: var(--primary); }
+        .text-primary-dark { color: var(--primary-dark); }
+        .border-primary { border-color: var(--primary); }
+        .hover\:bg-primary-dark:hover { background-color: var(--primary-dark); }
+        .hover\:text-primary-dark:hover { color: var(--primary-dark); }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <!-- Barra de navegación -->
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between h-16">
+                <div class="flex">
+                    <!-- Logo -->
+                    <div class="flex-shrink-0 flex items-center">
+                        <a href="{% url 'home' %}" class="text-2xl font-bold text-primary">
+                            <i class="fas fa-handshake mr-2"></i>RecruitMatch AI
+                        </a>
+                    </div>
+                    
+                    <!-- Enlaces principales -->
+                    <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+                        <a href="{% url 'home' %}" class="inline-flex items-center px-1 pt-1 text-gray-900 hover:text-primary-dark">
+                            <i class="fas fa-home mr-2"></i>Inicio
+                        </a>
+                        <a href="{% url 'vacantes_list' %}" class="inline-flex items-center px-1 pt-1 text-gray-900 hover:text-primary-dark">
+                            <i class="fas fa-briefcase mr-2"></i>Vacantes
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Enlaces de usuario -->
+                <div class="hidden sm:ml-6 sm:flex sm:items-center sm:space-x-4">
+                    {% if user.is_authenticated %}
+                        {% if is_recruiter %}
+                        <a href="{% url 'create_vacante' %}" class="inline-flex items-center px-3 py-2 bg-primary text-white rounded-md hover:bg-primary-dark">
+                            <i class="fas fa-plus-circle mr-2"></i>Crear Vacante
+                        </a>
+                        {% endif %}
+                        <a href="{% url 'vacantes_solicitadas' %}" class="inline-flex items-center px-3 py-2 text-gray-900 hover:text-primary-dark">
+                            <i class="fas fa-list-check mr-2"></i>Mis Vacantes
+                        </a>
+                        <a href="{% url 'vacantes_favoritas' %}" class="inline-flex items-center px-3 py-2 text-gray-900 hover:text-primary-dark">
+                            <i class="fas fa-star mr-2"></i>Favoritos
+                        </a>
+                        <a href="{% url 'profile' %}" class="inline-flex items-center px-3 py-2 text-gray-900 hover:text-primary-dark">
+                            <i class="fas fa-user mr-2"></i>Mi Perfil
+                        </a>
+                        <form method="post" action="{% url 'logout' %}" class="inline">
+                            {% csrf_token %}
+                            <button type="submit" class="inline-flex items-center px-3 py-2 text-gray-900 hover:text-primary-dark">
+                                <i class="fas fa-sign-out-alt mr-2"></i>Cerrar Sesión
+                            </button>
+                        </form>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="inline-flex items-center px-3 py-2 text-gray-900 hover:text-primary-dark">
+                            <i class="fas fa-sign-in-alt mr-2"></i>Iniciar Sesión
+                        </a>
+                        <a href="{% url 'register' %}" class="inline-flex items-center px-4 py-2 bg-primary text-gray-900 rounded-md hover:bg-primary-dark">
+                            <i class="fas fa-user-plus mr-2"></i>Registrarse
+                        </a>
+                    {% endif %}
+                </div>
+
+                <!-- Botón móvil -->
+                <div class="flex items-center sm:hidden">
+                    <button type="button" class="mobile-menu-button inline-flex items-center justify-center p-2 rounded-md text-gray-900 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Menú móvil -->
+        <div class="mobile-menu hidden sm:hidden">
+            <div class="pt-2 pb-3 space-y-1">
+                <a href="{% url 'home' %}" class="block pl-3 pr-4 py-2 text-base font-medium text-gray-900 hover:text-primary-dark">
+                    <i class="fas fa-home mr-2"></i>Inicio
+                </a>
+                <a href="{% url 'vacantes_list' %}" class="block pl-3 pr-4 py-2 text-base font-medium text-gray-900 hover:text-primary-dark">
+                    <i class="fas fa-briefcase mr-2"></i>Vacantes
+                </a>
+                {% if user.is_authenticated %}
+                    {% if is_recruiter %}
+                    <a href="{% url 'create_vacante' %}" class="block pl-3 pr-4 py-2 text-base font-medium text-gray-900 hover:text-primary-dark">
+                        <i class="fas fa-plus-circle mr-2"></i>Crear Vacante
+                    </a>
+                    {% endif %}
+                    <a href="{% url 'vacantes_solicitadas' %}" class="block pl-3 pr-4 py-2 text-base font-medium text-gray-900 hover:text-primary-dark">
+                        <i class="fas fa-list-check mr-2"></i>Mis Vacantes
+                    </a>
+                    <a href="{% url 'vacantes_favoritas' %}" class="block pl-3 pr-4 py-2 text-base font-medium text-gray-900 hover:text-primary-dark">
+                        <i class="fas fa-star mr-2"></i>Favoritos
+                    </a>
+                    <a href="{% url 'profile' %}" class="block pl-3 pr-4 py-2 text-base font-medium text-gray-900 hover:text-primary-dark">
+                        <i class="fas fa-user mr-2"></i>Mi Perfil
+                    </a>
+                    <form method="post" action="{% url 'logout' %}" class="block">
+                        {% csrf_token %}
+                        <button type="submit" class="w-full text-left pl-3 pr-4 py-2 text-base font-medium text-gray-900 hover:text-primary-dark">
+                            <i class="fas fa-sign-out-alt mr-2"></i>Cerrar Sesión
+                        </button>
+                    </form>
+                {% else %}
+                    <a href="{% url 'login' %}" class="block pl-3 pr-4 py-2 text-base font-medium text-gray-900 hover:text-primary-dark">
+                        <i class="fas fa-sign-in-alt mr-2"></i>Iniciar Sesión
+                    </a>
+                    <a href="{% url 'register' %}" class="block pl-3 pr-4 py-2 text-base font-medium text-gray-900 hover:text-primary-dark">
+                        <i class="fas fa-user-plus mr-2"></i>Registrarse
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenido principal -->
+    <main class="container mx-auto px-4 py-8">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="mb-4 p-4 rounded-md {% if message.tags == 'success' %}bg-green-100 text-gray-900{% elif message.tags == 'error' %}bg-red-100 text-gray-900{% else %}bg-blue-100 text-gray-900{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+        
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <!-- Scripts -->
+    <script>
+        // Menú móvil
+        const mobileMenuButton = document.querySelector('.mobile-menu-button');
+        const mobileMenu = document.querySelector('.mobile-menu');
+        
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+    </script>
+</body>
+</html> 

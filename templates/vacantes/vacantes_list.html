@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50">
+    <div class="container mx-auto px-4 py-8">
+        <div class="flex justify-between items-center mb-8">
+            <h1 class="text-3xl font-bold text-primary">Todas las Vacantes</h1>
+            {% if user.is_authenticated and user.recruiterprofile %}
+            <a href="{% url 'create_vacante' %}" class="bg-primary hover:bg-primary-dark text-white font-bold py-2 px-4 rounded-lg">
+                <i class="fas fa-plus mr-2"></i>Crear Nueva Vacante
+            </a>
+            {% endif %}
+        </div>
+
+        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+            <h2 class="text-2xl font-bold text-primary mb-4">Buscar Vacantes</h2>
+            <form method="GET" class="space-y-4">
+                <div class="flex flex-col md:flex-row gap-4">
+                    <div class="flex-grow">
+                        <input type="text" name="q" value="{{ query }}" 
+                               placeholder="Buscar por título, empresa o descripción..." 
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary">
+                    </div>
+                    <div class="w-full md:w-64">
+                        <select name="location" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary">
+                            <option value="">Todas las ciudades</option>
+                            {% for city in cities %}
+                                <option value="{{ city }}" {% if location == city %}selected{% endif %}>{{ city }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div>
+                        <button type="submit" class="w-full md:w-auto px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50">
+                            <i class="fas fa-search mr-2"></i>Buscar
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for vacante in vacantes %}
+            <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
+                <div class="p-6">
+                    <h3 class="text-xl font-semibold text-primary mb-2">{{ vacante.title }}</h3>
+                    <p class="text-gray-600 mb-2">
+                        <i class="fas fa-building mr-2"></i>{{ vacante.company }}
+                    </p>
+                    <p class="text-gray-600 mb-2">
+                        <i class="fas fa-map-marker-alt mr-2"></i>{{ vacante.location }}
+                    </p>
+                    <p class="text-gray-600 mb-2">
+                        <i class="fas fa-briefcase mr-2"></i>{{ vacante.employment_type }}
+                    </p>
+                    <p class="text-gray-600 mb-4">
+                        <i class="fas fa-dollar-sign mr-2"></i>{{ vacante.salary }}
+                    </p>
+                    <a href="{% url 'vacante_detail' vacante.pk %}" 
+                       class="inline-block px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark">
+                        <i class="fas fa-eye mr-2"></i>Ver Detalles
+                    </a>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-span-full text-center py-8">
+                <p class="text-gray-600">No se encontraron vacantes que coincidan con tu búsqueda.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %} 

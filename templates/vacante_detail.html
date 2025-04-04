@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-100 py-6 flex flex-col justify-center sm:py-12">
+    <div class="relative py-3 sm:max-w-xl sm:mx-auto">
+        <div class="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-20">
+            <div class="max-w-md mx-auto">
+                <div class="divide-y divide-gray-200">
+                    <div class="py-8 text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7">
+                        <div class="flex justify-between items-start mb-6">
+                            <div>
+                                <h1 class="text-3xl font-bold text-gray-900 mb-2">{{ vacante.title }}</h1>
+                                <p class="text-xl text-gray-600">{{ vacante.company }}</p>
+                            </div>
+                            {% if user.is_authenticated %}
+                                <a href="{% url 'toggle_favorito' vacante.id %}" class="text-2xl {% if user in vacante.favoritos.all %}text-yellow-500{% else %}text-gray-400{% endif %} hover:text-yellow-500">
+                                    <i class="fas fa-star"></i>
+                                </a>
+                            {% endif %}
+                        </div>
+
+                        <div class="space-y-4">
+                            <div>
+                                <h3 class="font-semibold">Empresa:</h3>
+                                <p>{{ vacante.company }}</p>
+                            </div>
+
+                            <div>
+                                <h3 class="font-semibold">Ubicación:</h3>
+                                <p>{{ vacante.location }}</p>
+                            </div>
+
+                            <div>
+                                <h3 class="font-semibold">Tipo de Empleo:</h3>
+                                <p>{{ vacante.get_employment_type_display }}</p>
+                            </div>
+
+                            <div>
+                                <h3 class="font-semibold">Salario:</h3>
+                                <p>{{ vacante.salary }}</p>
+                            </div>
+
+                            <div>
+                                <h3 class="font-semibold">Descripción:</h3>
+                                <p>{{ vacante.description }}</p>
+                            </div>
+
+                            <div>
+                                <h3 class="font-semibold">Requisitos:</h3>
+                                <p>{{ vacante.requirements }}</p>
+                            </div>
+
+                            {% if vacante.website %}
+                                <div>
+                                    <h3 class="font-semibold">Sitio web:</h3>
+                                    <a href="{{ vacante.website }}" target="_blank" class="text-blue-600 hover:underline">{{ vacante.website }}</a>
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mt-8">
+                            {% if user.is_authenticated %}
+                                {% if ya_postulado %}
+                                    <div class="text-center">
+                                        <p class="text-lg font-semibold mb-4">
+                                            Estado de tu postulación: 
+                                            <span class="{% if estado_postulacion == 'pendiente' %}text-yellow-600{% elif estado_postulacion == 'aceptada' %}text-green-600{% else %}text-red-600{% endif %}">
+                                                {{ estado_postulacion|title }}
+                                            </span>
+                                        </p>
+                                    </div>
+                                {% else %}
+                                    <form method="post" class="text-center">
+                                        {% csrf_token %}
+                                        <button type="submit" class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary-dark transition duration-300">
+                                            <i class="fas fa-paper-plane mr-2"></i>Postularme a esta vacante
+                                        </button>
+                                    </form>
+                                {% endif %}
+                            {% else %}
+                                <div class="text-center">
+                                    <p class="text-lg mb-4">Para postularte a esta vacante, debes iniciar sesión.</p>
+                                    <a href="{% url 'login' %}" class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary-dark transition duration-300">
+                                        <i class="fas fa-sign-in-alt mr-2"></i>Iniciar Sesión
+                                    </a>
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mt-8 text-center">
+                            <a href="{% url 'vacantes_list' %}" class="text-primary hover:text-primary-dark">
+                                <i class="fas fa-arrow-left mr-2"></i>Volver a las vacantes
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

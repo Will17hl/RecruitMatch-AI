@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold text-gray-900 mb-8">Mis Vacantes Favoritas</h1>
+    
+    {% if vacantes %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for vacante in vacantes %}
+                <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-4">
+                            <h2 class="text-xl font-semibold text-gray-900">{{ vacante.title }}</h2>
+                            <a href="{% url 'toggle_favorito' vacante.id %}" class="text-yellow-500 hover:text-yellow-600">
+                                <i class="fas fa-star"></i>
+                            </a>
+                        </div>
+                        
+                        <p class="text-gray-600 mb-4">{{ vacante.company }}</p>
+                        
+                        <div class="flex items-center text-gray-600 mb-4">
+                            <i class="fas fa-map-marker-alt mr-2"></i>
+                            <span>{{ vacante.location }}</span>
+                        </div>
+                        
+                        <div class="flex items-center text-gray-600 mb-4">
+                            <i class="fas fa-briefcase mr-2"></i>
+                            <span>{{ vacante.get_employment_type_display }}</span>
+                        </div>
+                        
+                        {% if vacante.salary %}
+                            <div class="flex items-center text-gray-600 mb-4">
+                                <i class="fas fa-dollar-sign mr-2"></i>
+                                <span>{{ vacante.salary }}</span>
+                            </div>
+                        {% endif %}
+                        
+                        <div class="mt-4">
+                            <a href="{% url 'vacante_detail' vacante.id %}" 
+                               class="inline-flex items-center px-4 py-2 bg-primary text-gray-900 rounded-md hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
+                                <i class="fas fa-eye mr-2"></i>Ver Detalles
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="bg-white rounded-lg shadow-md p-6 text-center">
+            <p class="text-gray-600 mb-4">No tienes vacantes favoritas guardadas.</p>
+            <a href="{% url 'vacantes_list' %}" class="text-primary hover:text-primary-dark">
+                <i class="fas fa-search mr-2"></i>Explorar vacantes
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %} 
